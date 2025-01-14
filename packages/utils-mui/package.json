@@ -20,8 +20,5 @@
   },
   "devDependencies": {
     "config-tsconfig": "*"
-  },
-  "dependencies": {
-    "utils-mui": "file:"
   }
 }

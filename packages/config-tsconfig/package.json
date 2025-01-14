@@ -1,7 +1,5 @@
 {
   "name": "config-tsconfig",
-  "version": "0.0.0",
-  "dependencies": {
-    "config-tsconfig": "file:"
-  }
+  "version": "0.0.0"
+
 }

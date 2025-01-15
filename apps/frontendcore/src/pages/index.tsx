@@ -1,5 +1,5 @@
-import { HomePage } from 'modules';
+import { Dashboard } from 'modules';
 
-const Home = () => <HomePage />;
+const Home = () => <Dashboard />;
 
 export default Home;

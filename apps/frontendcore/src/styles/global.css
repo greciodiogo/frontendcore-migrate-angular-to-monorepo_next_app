@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background-color: #000 !important;
-}
-
 /* You can add global styles to this file, and also import other style files */
 
 /* You can add global styles to this file, and also import other style files */
@@ -34,6 +30,11 @@ body{
   z-index: 99999 !important;
 }
 
+
+*{
+  margin: 0;
+  padding: 0;
+}
 
 html, body {
   height: 100%;

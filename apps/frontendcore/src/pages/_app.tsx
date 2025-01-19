@@ -2,11 +2,15 @@ import { CacheProvider } from '@emotion/react';
 import { ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { Version } from 'ui-mui';
 import { createEmotionCache } from 'utils-mui';
 import { getVersionInfo } from 'utils-version';
 
 import { Footer } from 'components/Footer';
 import { Header } from 'components/Header';
+import { Sidebar } from 'components/Sidebar';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // @ts-expect-error cause this works
 import GlobalStyles from './../styles/global.css';
@@ -21,10 +25,24 @@ const App = ({ Component, pageProps }: AppProps) => {
         <meta name="version" content={getVersionInfo()} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
-      <CacheProvider value={clientSideEmotionCache}>
-        <ThemeProvider theme={GlobalStyles}>{<Component {...pageProps} />}</ThemeProvider>
-      </CacheProvider>
+      <div className="wrapper">
+        <Header />
+        <Sidebar />
+        <CacheProvider value={clientSideEmotionCache}>
+          <ThemeProvider theme={GlobalStyles}>
+            <Version version={getVersionInfo()} />
+            <div className="content-wrapper">
+              <section className="content">
+                <div className="container-fluid">
+                  <div className="row">
+                    <div className="col-12">{<Component {...pageProps} />}</div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </ThemeProvider>
+        </CacheProvider>
+      </div>
       <Footer version="2.11.4" date="13/01/2025" />
     </>
   );

@@ -1,10 +1,11 @@
 import React from 'react';
 export const Sidebar = () => {
+  const logotipo = 'at.png';
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-40 sidebar-dark-info">
       <a href="/dashboard" className="brand-link">
         <img
-          src="../../../../assets/img/{{ logotipo }}"
+          src={`../../../../assets/img/${logotipo}`}
           alt="AdminLTE Logo"
           className="brand-imagee img-circlee elevation-3e"
           style={{ opacity: 0.8 }}

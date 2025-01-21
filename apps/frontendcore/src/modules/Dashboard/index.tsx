@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { APPBox } from 'common/shared/box/Box';
 
+export type DashbordProps = {
+  clientes: string;
+  produtos: string;
+  servicos: string;
+  recibos: string;
+  vendas: string;
+  facturas: string;
+};
+
+export type DashbordsetProps = {
+  dashboard: DashbordProps;
+  setDashboard: React.Dispatch<React.SetStateAction<DashbordProps>>;
+};
+
 export const Dashboard = () => {
-  const getDashboardInit = () => {};
+  const [dashboard, setDashboard] = useState(null);
+  useEffect(() => {
+    const getDashboardInit = async () => {
+      const dashboardData = await fetch('http://localhost:3381/api/dashboards/findDashboardInit', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json', // Tipo aceito
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTczNzM4OTAyNSwiZXhwIjoxNzM3NDI1MDI1fQ.GM0ETTSAytGp5huB9bFHjBSeCXT2yUL4i77poaSDbxY', // Token de autenticação
+        },
+      });
+      // const dashboardData = await fetchData('/dashboards/findDashboardInit');
+      const response = await dashboardData.json();
+      setDashboard(response.data);
+    };
+
+    getDashboardInit();
+  }, []);
   return (
     <>
       <div
@@ -15,12 +47,7 @@ export const Dashboard = () => {
           border: '1px solid #c2c7d0',
         }}
       >
-        <button
-          className="btn btn-primary btn-lg"
-          style={{ float: 'right' }}
-          type="button"
-          onClick={getDashboardInit()}
-        >
+        <button className="btn btn-primary btn-lg" style={{ float: 'right' }} type="button">
           <i className="icon-refresh"></i> Recarregar Dados{' '}
         </button>
       </div>
@@ -31,7 +58,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Facturação"
-            boxNumber={2}
+            boxNumber={dashboard?.facturas}
             boxColor="bg-aqua"
             boxIcon="fa fa-file-text"
             boxLink={{ url: '/comercial/facturacao/listar', name: 'Nova Facturação' }}
@@ -40,7 +67,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Vendas"
-            boxNumber={4}
+            boxNumber={dashboard?.vendas}
             boxColor="bg-primary"
             boxIcon="fa fa-shopping-cart"
             boxLink={{ url: '/comercial/vendas/historico', name: 'Histórico Vendas' }}
@@ -49,7 +76,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Clientes"
-            boxNumber={0}
+            boxNumber={dashboard?.clientes}
             boxColor="bg-green"
             boxIcon="fa fa-users"
             boxLink={{ url: '/crm/clientes/consultar-clientes', name: 'Listagem de Clientes' }}
@@ -58,7 +85,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Produtos"
-            boxNumber={0}
+            boxNumber={dashboard?.produtos}
             boxColor="bg-yellow"
             boxIcon="fa fa-bookmark"
             boxLink={{ url: '/logistica/produtos/listar', name: 'Consultar produtos' }}
@@ -67,7 +94,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Serviços"
-            boxNumber={0}
+            boxNumber={dashboard?.servicos}
             boxColor="bg-yellow"
             boxIcon="fa fa-folder"
             boxLink={{ url: '/logistica/produtos/listar', name: 'Consultar serviços' }}
@@ -76,7 +103,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Recibos"
-            boxNumber={0}
+            boxNumber={dashboard?.recibos}
             boxColor="bg-red"
             boxIcon="fa fa-address-card"
             boxLink={{ url: '/comercial/cobrancas/recebimentos/consultar', name: 'Consultar Recibos' }}

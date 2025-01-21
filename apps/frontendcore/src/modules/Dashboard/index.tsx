@@ -2,39 +2,23 @@ import React, { useEffect, useState } from 'react';
 
 import { APPBox } from 'common/shared/box/Box';
 
-export type DashbordProps = {
-  clientes: string;
-  produtos: string;
-  servicos: string;
-  recibos: string;
-  vendas: string;
-  facturas: string;
-};
-
-export type DashbordsetProps = {
-  dashboard: DashbordProps;
-  setDashboard: React.Dispatch<React.SetStateAction<DashbordProps>>;
-};
+import { getDashboardInit } from './services/apiService';
+import { DashbordProps } from './types';
 
 export const Dashboard = () => {
-  const [dashboard, setDashboard] = useState(null);
+  const [dashboard, setDashboard] = useState<DashbordProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const getDashboardInit = async () => {
-      const dashboardData = await fetch('http://localhost:3381/api/dashboards/findDashboardInit', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json', // Tipo aceito
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTczNzM4OTAyNSwiZXhwIjoxNzM3NDI1MDI1fQ.GM0ETTSAytGp5huB9bFHjBSeCXT2yUL4i77poaSDbxY', // Token de autenticação
-        },
-      });
-      // const dashboardData = await fetchData('/dashboards/findDashboardInit');
-      const response = await dashboardData.json();
-      setDashboard(response.data);
+    const fetchDashboardData = async () => {
+      try {
+        const data = await getDashboardInit();
+        setDashboard(data.data);
+      } catch (err) {
+        setError((err as Error).message);
+      }
     };
 
-    getDashboardInit();
+    void fetchDashboardData();
   }, []);
   return (
     <>
@@ -48,7 +32,7 @@ export const Dashboard = () => {
         }}
       >
         <button className="btn btn-primary btn-lg" style={{ float: 'right' }} type="button">
-          <i className="icon-refresh"></i> Recarregar Dados{' '}
+          <i className="icon-refresh"></i> Recarregar Dados {error}{' '}
         </button>
       </div>
       <hr />

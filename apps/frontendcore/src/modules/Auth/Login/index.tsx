@@ -1,23 +1,34 @@
-import { TextField } from '@mui/material';
-import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { yupResolver } from '@hookform/resolvers/yup';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+
+import { ToastContainer } from 'common/shared/components/Toast/ToastContainer';
+import { ControlledTextField } from 'hooks/useFormHandler';
 
 import { AuthService } from 'lib/login';
 
-export const Login = () => {
-  const authService = new AuthService();
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+import { validationSchema } from 'utils/validationSchema';
 
-  const onHandleSubmit = async (event: React.FormEvent) => {
+export const Login = () => {
+  // const { showToast } = useToast(); // Use o hook aqui
+  const authService = new AuthService();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema.login),
+    mode: 'all', // Validação ocorre ao sair do campo
+  });
+
+  const onHandleSubmit = async (data: { username: string; password: string }) => {
     try {
       const isCredentializedUser = await toast.promise(
         authService.login({
-          username: formData.username,
-          password: formData.password,
+          username: data.username,
+          password: data.password,
         }),
         {
           pending: 'Autenticando usuário...',
@@ -48,13 +59,7 @@ export const Login = () => {
   return (
     <div className="login-container">
       <div className="login-content">
-        <form onSubmit={(event) => {
-          event.preventDefault(); // Evita o comportamento padrão do formulário.
-          void onHandleSubmit(event); // Encapsula a chamada da função async.
-        }}
-          className="login-form"
-          style={{ position: 'relative' }}
-        >
+        <form onSubmit={handleSubmit(onHandleSubmit)} className="login-form" style={{ position: 'relative' }}>
           <img
             className="at-logo pb-4"
             src="assets/img/at.png"
@@ -65,42 +70,15 @@ export const Login = () => {
           <p className="text-muted"></p>
 
           <div className="row">
-            <TextField
-              label="Utilizador"
-              placeholder="Username"
-              name="username"
-              variant="outlined"
-              value={formData.username}
-              onChange={handleChange}
-              className="example-full-width text-height col-md-12 col-xs-12 col-sm-12"
-            />
-            <TextField
-              label="Password"
-              placeholder="Password"
-              name="password"
-              variant="outlined"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="example-full-width text-height col-md-12 col-xs-12 col-sm-12 pt-5"
-            />
-          </div>
+            <ControlledTextField name="username" label="Utilizador" control={control} errors={errors} />
 
+            <ControlledTextField name="password" label="Password" type="password" control={control} errors={errors} />
+          </div>
           <div className="row pt-5">
             <button className="btn btn-lg btn-block btn-login" style={{ height: '67px' }}>
               <h2>Entrar</h2>
             </button>
-            <ToastContainer
-              position="bottom-center"
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable
-              pauseOnHover
-              theme="light"
-            />
+            <ToastContainer />
           </div>
 
           <div className="row help-password">

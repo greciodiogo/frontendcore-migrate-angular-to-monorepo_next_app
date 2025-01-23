@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { APPBox } from 'common/shared/box/Box';
+import { APPBox } from 'common/shared/components/box/Box';
 
 import { getDashboardInit } from './services/apiService';
 import { DashbordProps } from './types';

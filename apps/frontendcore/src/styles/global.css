@@ -10,6 +10,8 @@
 /* @import "assets/plugins/fontawesome-free/css/all.min.css"; */
 /** Ionicons */
 
+@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700";
+
 /* @import "https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"; */
 /** overlayScrollbars */
 
@@ -42,10 +44,6 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-html, body {
-  height: 100%;
-}
-
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -55,33 +53,6 @@ body {
   zoom: 60%;
   background: #ecf0f5;
 }
-
-
-/* .table-bordered {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-    }
-  .table-bordered tbody {
-      display: block;
-      width: 100%;
-      overflow: auto;
-      height: 290px;
-    }
-    .table-bordered thead tr {
-      display: block;
-    }
-    .table-bordered th,
-    .table-bordered  td {
-      padding: 5px 10px;
-      width: 200px;
-    }
- */
-
- /* .mat-form-field-appearance-outline .mat-form-field-outline {
-  background: #fff;
-  border-radius: 10px;
-} */
 
 .modal-header, .modal-footer {
   background: #dee2e642;
@@ -697,7 +668,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .content-wrapper {
-  min-height: 1144.83px;
+  /* min-height: 1144.83px; */
 }
 
 .form-control {
@@ -768,10 +739,6 @@ html, body {
 body {
   font: 300 15.5px/20px Roboto, sans-serif !important;
   letter-spacing: normal;
-}
-
-html, body {
-  height: 100%;
 }
 
 body {
@@ -1550,4 +1517,127 @@ label:not(.form-check-label):not(.custom-file-label) {
   padding: 8px 25px !important;
   font-size: 16px !important;
   height: 36px;
+}
+
+
+html, body {
+  height: 100% !important;
+}
+
+
+.login-container {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+
+}
+.login-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.login-container>:first-child {
+  height: 100%;
+  flex: 0 0 48%;
+  flex-shrink: 0;
+}
+
+.login-bg {
+  height: 100%;
+  background-image: url('/assets/img/bg1.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  flex: 0 0 52%;
+  flex-shrink: 0;
+}
+
+.at-logo {
+  width: 40em;
+  display: block;
+  margin: auto;
+}
+
+.login-form {
+    display: block;
+    margin: auto;
+    width: 55%;
+    font-size: 24px;
+}
+
+.login-form .btn-login {
+  border-radius: 12px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  margin: 10px;
+  color: #fff;
+  background-color:#02507C;
+  border-color: #02507C;
+}
+
+.help-password {
+  padding: 10px;
+  /* margin-top: 5px; */
+}
+
+.login-form .help-password .forgot-password>a, .login-form .help-password .rememberme {
+  color: #a4aab2;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.login-form .help-password .forgot-password>a:hover {
+  color: #337ab7;
+  text-decoration: none
+}
+
+.login-form .help-password .rememberme>input {
+  height: 25px;
+  width: 25px;
+  position: relative;
+  top: 5px;
+}
+
+.copyright {
+  color: #a4aab2;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.main-footer{
+    display: none;
+}
+
+.mat-input-element { 
+    font-size: 20px;
+}
+
+.content, .col-12{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.auth-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.text-height input{
+  height: 34px !important;
+  font-size: 24px !important;
+}
+
+.text-height label{
+  font-size: 18px !important;
 }

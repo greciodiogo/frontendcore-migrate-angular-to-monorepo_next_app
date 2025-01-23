@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { APPBox } from 'common/shared/box/Box';
+import { APPBox } from 'common/shared/components/box/Box';
+
+import { getDashboardInit } from './services/apiService';
+import { DashbordProps } from './types';
 
 export const Dashboard = () => {
-  const getDashboardInit = () => {};
+  const [dashboard, setDashboard] = useState<DashbordProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const data = await getDashboardInit();
+        setDashboard(data.data);
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    };
+
+    void fetchDashboardData();
+  }, []);
   return (
     <>
       <div
@@ -15,13 +31,8 @@ export const Dashboard = () => {
           border: '1px solid #c2c7d0',
         }}
       >
-        <button
-          className="btn btn-primary btn-lg"
-          style={{ float: 'right' }}
-          type="button"
-          onClick={getDashboardInit()}
-        >
-          <i className="icon-refresh"></i> Recarregar Dados{' '}
+        <button className="btn btn-primary btn-lg" style={{ float: 'right' }} type="button">
+          <i className="icon-refresh"></i> Recarregar Dados {error}{' '}
         </button>
       </div>
       <hr />
@@ -31,7 +42,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Facturação"
-            boxNumber={2}
+            boxNumber={dashboard?.facturas}
             boxColor="bg-aqua"
             boxIcon="fa fa-file-text"
             boxLink={{ url: '/comercial/facturacao/listar', name: 'Nova Facturação' }}
@@ -40,7 +51,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Vendas"
-            boxNumber={4}
+            boxNumber={dashboard?.vendas}
             boxColor="bg-primary"
             boxIcon="fa fa-shopping-cart"
             boxLink={{ url: '/comercial/vendas/historico', name: 'Histórico Vendas' }}
@@ -49,7 +60,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Clientes"
-            boxNumber={0}
+            boxNumber={dashboard?.clientes}
             boxColor="bg-green"
             boxIcon="fa fa-users"
             boxLink={{ url: '/crm/clientes/consultar-clientes', name: 'Listagem de Clientes' }}
@@ -58,7 +69,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Produtos"
-            boxNumber={0}
+            boxNumber={dashboard?.produtos}
             boxColor="bg-yellow"
             boxIcon="fa fa-bookmark"
             boxLink={{ url: '/logistica/produtos/listar', name: 'Consultar produtos' }}
@@ -67,7 +78,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Serviços"
-            boxNumber={0}
+            boxNumber={dashboard?.servicos}
             boxColor="bg-yellow"
             boxIcon="fa fa-folder"
             boxLink={{ url: '/logistica/produtos/listar', name: 'Consultar serviços' }}
@@ -76,7 +87,7 @@ export const Dashboard = () => {
         <div className="col-lg-2 col-xs-6">
           <APPBox
             boxText="Recibos"
-            boxNumber={0}
+            boxNumber={dashboard?.recibos}
             boxColor="bg-red"
             boxIcon="fa fa-address-card"
             boxLink={{ url: '/comercial/cobrancas/recebimentos/consultar', name: 'Consultar Recibos' }}

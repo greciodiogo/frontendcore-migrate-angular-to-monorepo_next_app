@@ -11,6 +11,7 @@ import { Header } from 'components/Header';
 import { Sidebar } from 'components/Sidebar';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 // @ts-expect-error cause this works
 import GlobalStyles from './../styles/global.css';

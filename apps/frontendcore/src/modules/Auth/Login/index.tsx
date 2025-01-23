@@ -1,5 +1,6 @@
 import { TextField } from '@mui/material';
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { AuthService } from 'lib/login';
 
@@ -12,10 +13,33 @@ export const Login = () => {
   };
 
   const onHandleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
     try {
-      const response = await authService.login({ username: formData.username, password: formData.password });
-      console.log(response);
+      const isCredentializedUser = await toast.promise(
+        authService.login({
+          username: formData.username,
+          password: formData.password,
+        }),
+        {
+          pending: 'Autenticando usuário...',
+        },
+        {
+          position: 'bottom-center',
+          hideProgressBar: false,
+          autoClose: 3000,
+        },
+      );
+
+      if (isCredentializedUser) {
+        toast.success('Login realizado com sucesso! 🎉  ', {
+          position: 'bottom-center',
+          autoClose: 3000,
+        });
+      } else {
+        toast.error('Credenciais inválidas!', {
+          position: 'bottom-center',
+          autoClose: 3000,
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -24,7 +48,13 @@ export const Login = () => {
   return (
     <div className="login-container">
       <div className="login-content">
-        <form onSubmit={(event) => onHandleSubmit(event)} className="login-form" style={{ position: 'relative' }}>
+        <form onSubmit={(event) => {
+          event.preventDefault(); // Evita o comportamento padrão do formulário.
+          void onHandleSubmit(event); // Encapsula a chamada da função async.
+        }}
+          className="login-form"
+          style={{ position: 'relative' }}
+        >
           <img
             className="at-logo pb-4"
             src="assets/img/at.png"
@@ -49,6 +79,7 @@ export const Login = () => {
               placeholder="Password"
               name="password"
               variant="outlined"
+              type="password"
               value={formData.password}
               onChange={handleChange}
               className="example-full-width text-height col-md-12 col-xs-12 col-sm-12 pt-5"
@@ -59,6 +90,17 @@ export const Login = () => {
             <button className="btn btn-lg btn-block btn-login" style={{ height: '67px' }}>
               <h2>Entrar</h2>
             </button>
+            <ToastContainer
+              position="bottom-center"
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </div>
 
           <div className="row help-password">

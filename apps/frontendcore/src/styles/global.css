@@ -1641,3 +1641,13 @@ html, body {
 .text-height label{
   font-size: 18px !important;
 }
+
+.Toastify__toast-theme--light {
+  border: 2px solid #02507C !important; 
+  /* color: #fff !important; Cor do texto */
+}
+
+/* Customizando a barra de progresso */
+.Toastify__toast-theme--light .Toastify__progress-bar {
+  /* background-color: #02507C !important; Força a cor da barra de progresso */
+}

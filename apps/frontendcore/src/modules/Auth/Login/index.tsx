@@ -5,9 +5,7 @@ import { toast } from 'react-toastify';
 
 import { ToastContainer } from 'common/shared/components/Toast/ToastContainer';
 import { ControlledTextField } from 'hooks/useFormHandler';
-
 import { AuthService } from 'lib/login';
-
 import { validationSchema } from 'utils/validationSchema';
 
 export const Login = () => {
@@ -56,10 +54,18 @@ export const Login = () => {
     }
   };
 
+  const handleFormSubmit = async (data: { username: string; password: string }) => {
+    try {
+      await onHandleSubmit(data); // Chama a função assíncrona diretamente
+    } catch (err) {
+      console.error('Erro ao processar o formulário:', err);
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-content">
-        <form onSubmit={handleSubmit(onHandleSubmit)} className="login-form" style={{ position: 'relative' }}>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="login-form" style={{ position: 'relative' }}>
           <img
             className="at-logo pb-4"
             src="assets/img/at.png"

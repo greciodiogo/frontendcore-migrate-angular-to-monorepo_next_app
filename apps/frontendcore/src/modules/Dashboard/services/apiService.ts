@@ -1,4 +1,4 @@
-import { DashboardResponse, LoginProps } from '../types';
+import { DashboardResponse } from '../types';
 
 const BASE_URL = 'http://localhost:3381/api/';
 const TOKEN =

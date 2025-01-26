@@ -1,10 +1,12 @@
+import Router from 'next/router';
+import { parseCookies, setCookie } from 'nookies';
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
-import { StorageService } from 'lib/storage';
+import { AuthService } from 'lib/login';
 
 type AuthContextType = {
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  login: (token: never) => void;
   logout: () => void;
 };
 
@@ -12,22 +14,40 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const storage = new StorageService();
+  const authService = new AuthService();
+
   useEffect(() => {
     // Verifica se o token está presente no localStorage
-    const token = localStorage.getItem('auth_token');
+    const { accessToken: token } = parseCookies();
+
     if (token) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  const login = (token: never) => {
-    storage.setItemLocalStorage(token);
+  const login = async (data: { username: string; password: string }) => {
+    const token = await authService.login({
+      username: data.username,
+      password: data.password,
+    });
+
+    if (!token) {
+      throw new Error('Login failed: Invalid token');
+    }
+
+    setCookie(null, 'accessToken', JSON.stringify(token), {
+      maxAge: 60 * 60 * 1, // 1 hour
+    });
+
     setIsAuthenticated(true);
+
+    Router.push('/');
+
+    return true;
   };
 
   const logout = () => {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
   };
 

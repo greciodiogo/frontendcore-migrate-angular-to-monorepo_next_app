@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { ToastContainer } from 'common/shared/components/Toast/ToastContainer';
+import { useAuth } from 'context/AuthContext';
 import { ControlledTextField } from 'hooks/useFormHandler';
-import { AuthService } from 'lib/login';
 import { validationSchema } from 'utils/validationSchema';
 
 export const Login = () => {
   // const { showToast } = useToast(); // Use o hook aqui
-  const authService = new AuthService();
+  const { login } = useAuth();
 
   const {
     control,
@@ -22,9 +22,10 @@ export const Login = () => {
   });
 
   const onHandleSubmit = async (data: { username: string; password: string }) => {
+
     try {
       const isCredentializedUser = await toast.promise(
-        authService.login({
+        login({
           username: data.username,
           password: data.password,
         }),

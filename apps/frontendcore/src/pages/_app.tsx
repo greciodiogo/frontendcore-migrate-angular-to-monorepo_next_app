@@ -9,6 +9,8 @@ import { Footer } from 'components/Footer';
 import { Header } from 'components/Header';
 import { Sidebar } from 'components/Sidebar';
 
+import { AuthProvider } from '../context/AuthContext';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -37,7 +39,9 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
               <section className="content">
                 <div className="container-fluid">
                   <div className="row">
-                    <div className="col-12">{page}</div>
+                    <div className="col-12">
+                      <AuthProvider>{page}</AuthProvider>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -56,7 +60,11 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
         <meta name="version" content="2.11.4" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {getLayout(<Component {...pageProps} />)}
+      {getLayout(
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>,
+      )}
     </>
   );
 };

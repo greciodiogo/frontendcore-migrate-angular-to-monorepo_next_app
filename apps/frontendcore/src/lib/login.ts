@@ -1,7 +1,6 @@
 import { LoginProps } from 'modules/Dashboard/types';
 
 import { StorageService } from './storage';
-
 export class AuthService {
   auth = new StorageService();
   BASE_URL = 'http://localhost:3381/api';
@@ -21,8 +20,11 @@ export class AuthService {
           if (data) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             this.auth.setItemLocalStorage(data?.data);
-            window.location.href = '/dashboard';
-            return true;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+            const token = {
+              token: data?.data.token,
+            };
+            return token;
           } else {
             return false;
           }

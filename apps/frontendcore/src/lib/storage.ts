@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 export class StorageService {
   public currentToken = 'accessToken';
   public refreshToken = '_refreshToken';
@@ -6,6 +8,14 @@ export class StorageService {
     localStorage.setItem('screen', '0');
     localStorage.setItem('last_access', data.last_access);
     localStorage.setItem(this.currentToken, JSON.stringify(data));
+  }
+  public setItemCookie<T extends { last_access: string }>(data: T): void {
+    const token = JSON.stringify(data);
+    Cookies.set('accessToken', token, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: 1, // Expira em 1 dia
+    });
   }
 
   get getItemLocalStorage(): Record<string, unknown> | null {

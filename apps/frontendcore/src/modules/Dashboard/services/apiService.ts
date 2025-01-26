@@ -1,12 +1,13 @@
 import { DashboardResponse } from '../types';
 
-const BASE_URL = 'http://localhost:3381/api/';
+const BASE_URL = 'http://localhost:3381/api';
+
 const TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTczNzQ0ODc4OSwiZXhwIjoxNzM3NDg0Nzg5fQ.DUDw5UT6kBa9MohMPhH-zvW6lHvLRdRS_lesU0p199A';
 
 // services/apiService.js
 export const getDashboardInit = async (): Promise<DashboardResponse> => {
-  const response = await fetch(`${BASE_URL}/findDashboardInit`, {
+  const response = await fetch(`${BASE_URL}/dashboards/findDashboardInit`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

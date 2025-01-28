@@ -40,7 +40,23 @@ export const Sidebar = () => {
                 <p>Página Principal</p>
               </a>
             </li>
-            ;
+            <li className="nav-item has-treeview">
+              <a href="/users" className="nav-link">
+                <i className="fa fa-unlock nav-icon"></i>
+                <p>
+                  Controle Acesso
+                  <i className="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul className="nav nav-treeview">
+                <li className="nav-item">
+                  <a href="/users" className="nav-link">
+                    <i className="fa fa-search nav-icon"></i>
+                    <p>Utilizadores</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
           </ul>
         </nav>
       </div>

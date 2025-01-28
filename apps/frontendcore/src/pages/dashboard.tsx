@@ -1,5 +1,7 @@
 import { Dashboard } from 'modules';
 
-const Home = () => <Dashboard />;
+const Home = () => {
+  return <Dashboard />;
+};
 
 export default Home;

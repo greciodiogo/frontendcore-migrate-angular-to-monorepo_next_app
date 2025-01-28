@@ -12,7 +12,8 @@ export const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const data = await getDashboardInit();
-        setDashboard(data.data);
+        console.log(data)
+        setDashboard(data);
       } catch (err) {
         setError((err as Error).message);
       }

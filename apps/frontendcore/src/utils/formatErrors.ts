@@ -1,4 +1,9 @@
-export const formatErrors = (error: any): void => {
-  // Pode personalizar o tratamento de erros aqui
-  console.error('API Error:', error.response ? error.response.data : error.message);
+import { AxiosError } from 'axios';
+
+export const formatErrors = (error: AxiosError | Error): void => {
+  if ('response' in error && error.response) {
+    console.error('API Error:', error.response.data);
+  } else {
+    console.error('Erro desconhecido:', error.message);
+  }
 };

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { ToastContainer } from 'common/shared/components/Toast/ToastContainer';
-import { useAuth } from 'context/AuthContext';
+import { useAuth } from 'hooks/useAuth';
 import { ControlledTextField } from 'hooks/useFormHandler';
 import { validationSchema } from 'utils/validationSchema';
 
@@ -24,7 +24,6 @@ export const Login = () => {
   const onHandleSubmit = async (data: { username: string; password: string }): Promise<void> => {
     try {
       const isCredentializedUser = await toast.promise(
-        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
         login({
           username: data.username,
           password: data.password,

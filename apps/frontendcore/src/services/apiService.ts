@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 import { formatErrors } from 'utils/formatErrors';
 import { getToken } from 'utils/getToken';
@@ -23,8 +23,11 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    formatErrors(error);
-    return Promise.reject(error instanceof Error ? error : new Error('Erro desconhecido na requisição.'));
+    if (error instanceof AxiosError || error instanceof Error) {
+      formatErrors(error);
+      return Promise.reject(error);
+    }
+    return Promise.reject(new Error('Erro desconhecido na requisição.'));
   },
 );
 

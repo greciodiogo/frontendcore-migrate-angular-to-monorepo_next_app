@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from 'next/server';
 const protectedRoutes = ['/dashboard', 'users'];
 const publicRoutes = ['/auth', '/'];
 
-// eslint-disable-next-line @typescript-eslint/require-await
 const middleware = (req: NextRequest) => {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;

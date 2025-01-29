@@ -1,16 +1,18 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 
-import { useAuth } from 'hooks/useAuth';
+import { AuthService } from 'lib/login';
+import { GetUserDTO } from 'types/user';
+
 const Users = () => {
-  const { getUsers } = useAuth();
-  const [users, setUsers] = useState([]);
+  const auth = useMemo(() => new AuthService(), []);
+  const [users, setUsers] = useState<Array<GetUserDTO>>([]);
   const [error, setError] = useState<string | null>(null);
-  const [roles, setRoles] = useState([]);
-  const [lojas, setLojas] = useState([]);
+  // const [roles, setRoles] = useState([]);
+  // const [lojas, setLojas] = useState([]);
   const [filters, setFilters] = useState({
     page: 1,
-    perPage: 5,
+    perPage: '5',
     search: '',
     orderBy: '',
     loja_id: '',
@@ -18,30 +20,52 @@ const Users = () => {
     typeFilter: '',
     typeOrderBy: 'ASC',
   });
+  const handleChange = (event: SelectChangeEvent) => {
+    const { name, value } = event.target;
+    setFilters((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    setFilters({
+      ...filters,
+      search: event.target.value,
+    });
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
-      let params = new URLSearchParams({
-        page: filters.page, 
-        perPage: filters.perPage,
+      const params = new URLSearchParams({
+        page: String(filters.page), // Conversão para string
+        perPage: String(filters.perPage),
         search: filters.search,
         orderBy: filters.orderBy,
-        lojaId: filters.loja_id,
-        roleId: filters.role_id,
+        lojaId: String(filters.loja_id),
+        roleId: String(filters.role_id),
         typeOrderBy: filters.typeOrderBy,
         typeFilter: filters.typeFilter,
       });
 
       try {
-        const data = await getUsers({params});
-        setUsers(data?.data);
+        const response = await auth.getUsers(params);
+        const users = (response as { data: { data: Array<GetUserDTO> } }).data.data;
+        setUsers(users);
       } catch (err) {
         setError((err as Error).message);
       }
     };
 
     void fetchUsers();
-  }, []);
+  }, [
+    auth,
+    filters.page,
+    filters.perPage,
+    filters.search,
+    filters.orderBy,
+    filters.loja_id,
+    filters.role_id,
+    filters.typeOrderBy,
+    filters.typeFilter,
+  ]);
 
   return (
     <div className="row">
@@ -52,20 +76,21 @@ const Users = () => {
               {/* <!-- Modal Header --> */}
               <div className="modal-header">
                 <h4 className="modal-title"> Filtro de Dados</h4>
+                <span className="d-none">{error}</span>
               </div>
               {/* <!-- Modal body --> */}
               <div className="modal-body">
                 <div className="row">
                   <FormControl className="col-md-1">
-                    <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                    <InputLabel id="demo-simple-select-label">Entrada</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
-                      // onChange={handleChange}
+                      value={filters.perPage}
+                      label="Entrada"
+                      onChange={handleChange}
                       className="example-full-width
-                "
+                      "
                     >
                       <MenuItem value={5}>5</MenuItem>
                       <MenuItem value={10}>10</MenuItem>
@@ -78,11 +103,11 @@ const Users = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
-                      // onChange={handleChange}
+                      value={filters.role_id}
+                      label="Perfil"
+                      onChange={handleChange}
                       className="example-full-width
-                "
+                      "
                     >
                       <MenuItem value="">Perfil</MenuItem>
                     </Select>
@@ -93,9 +118,9 @@ const Users = () => {
                     <Select
                       labelId="lojaId"
                       id="demo-simple-select"
-                      // value={age}
+                      value={filters.loja_id}
                       label="Age"
-                      // onChange={handleChange}
+                      onChange={handleChange}
                       className="example-full-width
                 "
                     >
@@ -108,9 +133,9 @@ const Users = () => {
                     <Select
                       labelId="lojaId"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
-                      // onChange={handleChange}
+                      value={filters.typeFilter}
+                      label="Filtro"
+                      onChange={handleChange}
                       className="example-full-width
                 "
                     >
@@ -121,22 +146,14 @@ const Users = () => {
                     </Select>
                   </FormControl>
 
-                  <TextField className="col-md-2" id="outlined-basic" label="Pesquisar" variant="outlined" />
-
-                  {/* <mat-form-field appearance="outline" className="example-full-width
-                col-md-3 col-xs-2 col-sm-2">
-                <mat-label>Pesquisar</mat-label>
-                <input matInput [(ngModel)]="this.filter.search" placeholder='Pesquisar...'
-                  (keyup)="getPageFilterData($event)">
-                <mat-icon matSuffix>search</mat-icon>
-              </mat-form-field> */}
-
-                  {/* <div className="">
-                <mat-radio-group aria-label="Select an option" >
-                  <mat-radio-button value="ASC"> Crescente</mat-radio-button><br>
-                  <mat-radio-button value="DESC"> Decrescente</mat-radio-button>
-                </mat-radio-group>
-              </div> */}
+                  <TextField
+                    className="col-md-2"
+                    id="outlined-basic"
+                    value={filters.search}
+                    onChange={handleInputChange}
+                    label="Pesquisar"
+                    variant="outlined"
+                  />
 
                   <div className="">
                     <div className="form-group">
@@ -208,15 +225,15 @@ const Users = () => {
                           <td>{user.username}</td>
                           <td>{user.telefone}</td>
                           <td>{user.email}</td>
-                          <td>{user.perfil[0]?.name}</td>
+                          <td>{user.perfil?.[0]?.name ?? 'Sem perfil'}</td>
                           <td>
-                            {user.is_actived ? 
-                            <span className="btn bg-success btn-block ">Activo</span>
-                              :
-                            <span className="btn bg-danger btn-block ">Inactivo</span>
-                            }
-                            </td>
-                          <td>{user.loja?.nome || '-------'}</td>
+                            {user.is_actived ? (
+                              <span className="btn bg-success btn-block ">Activo</span>
+                            ) : (
+                              <span className="btn bg-danger btn-block ">Inactivo</span>
+                            )}
+                          </td>
+                          <td>{user.loja?.nome ?? '-------'}</td>
                           <td>{user.direccao?.designacao}</td>
                           <td>{user.created_at}</td>
                           <td>{user.updated_at}</td>

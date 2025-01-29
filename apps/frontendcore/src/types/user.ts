@@ -3,7 +3,7 @@ export type Perfil = {
 };
 
 export type Loja = {
-  nom: string;
+  nome: string;
 };
 
 export type Direccao = {
@@ -17,11 +17,11 @@ export type SignInRequestDTO = {
 
 export type GetUsersParams = Record<string, string | number | boolean>;
 
-export type GeTUserDTO = {
-  name: string;
-  username: string;
-  telefone: string;
-  email: string;
+export type GetUserDTO = {
+  name?: string;
+  username?: string;
+  telefone?: string;
+  email?: string;
   perfil?: Array<Perfil>; // Um array de objetos do tipo Perfil
   is_actived?: string; // Opcional
   loja?: Loja; // Opcional
@@ -36,6 +36,10 @@ export type Token = {
 
 export type DataResponse = {
   token: Token;
+};
+
+export type GetUserResponse = {
+  data: GetUserDTO;
 };
 
 export type ApiResponse = {

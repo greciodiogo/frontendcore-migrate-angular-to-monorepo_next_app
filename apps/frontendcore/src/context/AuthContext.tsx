@@ -3,12 +3,7 @@ import { parseCookies, setCookie } from 'nookies';
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
 import { AuthService } from 'lib/login';
-
-type AuthContextType = {
-  isAuthenticated: boolean;
-  login: (token: never) => void;
-  logout: () => void;
-};
+import { AuthContextType } from 'types/context';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -25,23 +20,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = async (data: { username: string; password: string }) => {
+  const login = async (data: { username: string; password: string }): Promise<boolean> => {
     const token = await authService.login({
       username: data.username,
       password: data.password,
     });
 
-    if (!token) {
-      throw new Error('Login failed: Invalid token');
-    }
-
     setCookie(null, 'accessToken', JSON.stringify(token), {
-      maxAge: 60 * 60 * 1, // 1 hour
+      maxAge: 60 * 60 * 1, // 1 hora
     });
 
     setIsAuthenticated(true);
 
-    Router.push('/');
+    await Router.push('/dashboard'); // Aguarde a navegação antes de retornar
 
     return true;
   };

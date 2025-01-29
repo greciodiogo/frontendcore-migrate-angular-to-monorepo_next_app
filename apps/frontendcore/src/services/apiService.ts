@@ -1,11 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-// import { getToken } from '../utils/auth';
-import { formatErrors } from '../utils/formatErrors';
+import { formatErrors } from 'utils/formatErrors';
+import { getToken } from 'utils/getToken';
 
 const BASE_URL = 'http://localhost:3381/api';
-const TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTczNzk2Njc3MywiZXhwIjoxNzM4MDAyNzczfQ.8_Pt1MHZQ8Y5lDHIVg7DYHEkE_qQO7vu5Df57pj6GUM'
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -16,29 +14,24 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
-    // const TOKEN = getToken();
-    if (TOKEN) {
-      config.headers.Authorization = `Bearer ${TOKEN}`;
+  async (config) => {
+    const token = await getToken();
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
-    return Promise.reject(error);
-  },
-);
-
-api.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
     formatErrors(error);
-    return Promise.reject(error);
+    return Promise.reject(error instanceof Error ? error : new Error('Erro desconhecido na requisição.'));
   },
 );
 
+// Ajuste o ApiService para aceitar tipos genéricos
 export const ApiService = {
-  get: (url: string, params = {}) => api.get(url, { params }),
-  post: (url: string, data = {}) => api.post(url, data),
-  put: (url: string, data = {}) => api.put(url, data),
-  delete: (url: string, params = {}) => api.delete(url, { params }),
+  get: <T = unknown>(url: string, params = {}): Promise<AxiosResponse<T>> => api.get(url, { params }),
+  post: <T = unknown>(url: string, data = {}): Promise<AxiosResponse<T>> => api.post(url, data),
+  put: <T = unknown>(url: string, data = {}): Promise<AxiosResponse<T>> => api.put(url, data),
+  delete: <T = unknown>(url: string, params = {}): Promise<AxiosResponse<T>> => api.delete(url, { params }),
 };

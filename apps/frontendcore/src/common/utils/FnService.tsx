@@ -26,7 +26,6 @@ export class FnService {
   // Converter número para extenso
   numberExtenso(value: number): string {
     const formattedValue = this.numberFormat(value); // Garante que o valor formatado seja uma string
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const extensoValue = extenso(formattedValue, {
       locale: 'br',
       mode: 'currency',
@@ -36,7 +35,7 @@ export class FnService {
     return this.toCapitalize(extensoValue.replace('euros', 'Kwanzas'));
   }
 
-  // eslint-disable-next-line prettier/prettier, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   calcularPercentualFact(factura: any) {
     const calc = factura.total - factura.valor_aberto;
     return parseFloat(

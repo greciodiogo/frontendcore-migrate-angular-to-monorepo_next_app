@@ -1,36 +1,24 @@
-import { LoginProps } from 'modules/Dashboard/types';
+import { ApiService } from 'services/apiService';
+import { SignInRequestDTO, SignInResponseDTO } from 'types/user';
+import { buildQueryString } from 'utils/buildQueryString';
 
 import { StorageService } from './storage';
 export class AuthService {
   auth = new StorageService();
-  BASE_URL = 'http://localhost:3381/api';
 
-  login = async ({ username, password }: LoginProps) => {
-    try {
-      return await fetch(`${this.BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ username: username, password: password }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            this.auth.setItemLocalStorage(data?.data);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-            const token = {
-              token: data?.data.token,
-            };
-            return token;
-          } else {
-            return false;
-          }
-        });
-    } catch (error) {
-      console.log('Error');
-    }
-  };
+  async login(credentials: SignInRequestDTO): Promise<string> {
+    const response = (await ApiService.post('/auth/login', credentials)) as { data: SignInResponseDTO };
+    const token = response.data.data.token.token;
+    return token;
+  }
+
+  async fetchUsers(queryString: string) {
+    const response = await ApiService.get(`/users?${queryString}`);
+    return response.data;
+  }
+
+  async getUsers(params: URLSearchParams) {
+    const queryString = buildQueryString(params);
+    return await this.fetchUsers(queryString);
+  }
 }

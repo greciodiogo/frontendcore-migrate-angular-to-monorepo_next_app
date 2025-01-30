@@ -32,7 +32,7 @@ export const Dashboard = () => {
         }}
       >
         <button className="btn btn-primary btn-lg" style={{ float: 'right' }} type="button">
-          <i className="icon-refresh"></i> Recarregar Dados {error}{' '}
+          <i className="icon-refresh"></i> Recarregar Dados <span className="d-none">{error}</span>
         </button>
       </div>
       <hr />

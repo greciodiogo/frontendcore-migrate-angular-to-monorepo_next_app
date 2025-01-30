@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { ToastContainer } from 'common/shared/components/Toast/ToastContainer';
-import { useAuth } from 'context/AuthContext';
+import { useAuth } from 'hooks/useAuth';
 import { ControlledTextField } from 'hooks/useFormHandler';
 import { validationSchema } from 'utils/validationSchema';
 
@@ -21,8 +21,7 @@ export const Login = () => {
     mode: 'all', // Validação ocorre ao sair do campo
   });
 
-  const onHandleSubmit = async (data: { username: string; password: string }) => {
-
+  const onHandleSubmit = async (data: { username: string; password: string }): Promise<void> => {
     try {
       const isCredentializedUser = await toast.promise(
         login({
@@ -66,7 +65,11 @@ export const Login = () => {
   return (
     <div className="login-container">
       <div className="login-content">
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="login-form" style={{ position: 'relative' }}>
+        <form
+          onSubmit={(event) => void handleSubmit(handleFormSubmit)(event)}
+          className="login-form"
+          style={{ position: 'relative' }}
+        >
           <img
             className="at-logo pb-4"
             src="assets/img/at.png"

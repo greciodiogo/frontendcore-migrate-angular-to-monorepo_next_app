@@ -1,15 +1,17 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 
+import { FormService } from 'common/utils/FormService';
 import { AuthService } from 'lib/login';
-import { GetUserDTO } from 'types/user';
+import { GetLojaDTO, GetRoleDTO, GetUserDTO } from 'types';
 
 const Users = () => {
   const auth = useMemo(() => new AuthService(), []);
-  const [users, setUsers] = useState<Array<GetUserDTO>>([]);
   const [error, setError] = useState<string | null>(null);
-  // const [roles, setRoles] = useState([]);
-  // const [lojas, setLojas] = useState([]);
+  const formService = useMemo(() => new FormService(), []);
+  const [users, setUsers] = useState<Array<GetUserDTO>>([]);
+  const [roles, setRoles] = useState<Array<GetRoleDTO>>([]);
+  const [lojas, setLojas] = useState<Array<GetLojaDTO>>([]);
   const [filters, setFilters] = useState({
     page: 1,
     perPage: '5',
@@ -22,6 +24,7 @@ const Users = () => {
   });
   const handleChange = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
+    console.log(name, value);
     setFilters((prevData) => ({ ...prevData, [name]: value }));
   };
 
@@ -46,6 +49,14 @@ const Users = () => {
       });
 
       try {
+        const rolesResponse = await formService.getRoles(params);
+        const roles = (rolesResponse as { data: Array<GetRoleDTO> }).data;
+        setRoles(roles);
+
+        const lojasResponse = await formService.getLojas(params);
+        const lojas = (lojasResponse as { data: Array<GetLojaDTO> }).data;
+        setLojas(lojas);
+
         const response = await auth.getUsers(params);
         const users = (response as { data: { data: Array<GetUserDTO> } }).data.data;
         setUsers(users);
@@ -57,6 +68,7 @@ const Users = () => {
     void fetchUsers();
   }, [
     auth,
+    formService,
     filters.page,
     filters.perPage,
     filters.search,
@@ -86,6 +98,7 @@ const Users = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
+                      name="perPage"
                       value={filters.perPage}
                       label="Entrada"
                       onChange={handleChange}
@@ -103,6 +116,7 @@ const Users = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
+                      name="role_id"
                       value={filters.role_id}
                       label="Perfil"
                       onChange={handleChange}
@@ -110,6 +124,11 @@ const Users = () => {
                       "
                     >
                       <MenuItem value="">Perfil</MenuItem>
+                      {roles.map((role, index) => (
+                        <MenuItem value={role.id} key={index}>
+                          {role.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
 
@@ -117,7 +136,8 @@ const Users = () => {
                     <InputLabel id="demo-simple-select-label">Loja</InputLabel>
                     <Select
                       labelId="lojaId"
-                      id="demo-simple-select"
+                      id="lojaId"
+                      name="loja_id"
                       value={filters.loja_id}
                       label="Age"
                       onChange={handleChange}
@@ -125,6 +145,11 @@ const Users = () => {
                 "
                     >
                       <MenuItem value="">Loja</MenuItem>
+                      {lojas.map((loja, index) => (
+                        <MenuItem value={loja.id} key={index}>
+                          {loja.nome}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
 
@@ -133,6 +158,7 @@ const Users = () => {
                     <Select
                       labelId="lojaId"
                       id="demo-simple-select"
+                      name="typeFilter"
                       value={filters.typeFilter}
                       label="Filtro"
                       onChange={handleChange}
@@ -149,6 +175,7 @@ const Users = () => {
                   <TextField
                     className="col-md-2"
                     id="outlined-basic"
+                    name="search"
                     value={filters.search}
                     onChange={handleInputChange}
                     label="Pesquisar"

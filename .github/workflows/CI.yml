@@ -14,14 +14,12 @@ env:
 
   FILE_PATH_UI_BUILD: ./packages/ui/build-storybook
   FILE_PATH_UI_MUI_BUILD: ./packages/ui-mui/build-storybook
-  FILE_PATH_UI_TAILWIND_BUILD: ./packages/ui-tailwind/build-storybook
 
   CACHE_PATHS_BUILD: |
     ./apps/frontendcore/build
     ./apps/frontendcore/build-storybook
     ./packages/ui/build-storybook
     ./packages/ui-mui/build-storybook
-    ./packages/ui-tailwind/build-storybook
   CACHE_KEY_BUILD: build-${{ github.sha }}-${{ github.ref_type }}
 
 jobs:
@@ -184,55 +182,3 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PROD_FRONTENDCORE }}
-
-  ##############
-  # UI
-  ##############
-
-  deploy-ui-stage:
-    name: Deploy UI - Stage 🚀
-    needs: [build, lint, tsc, test]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    environment:
-      name: UI - Stage
-      url: https://turbo-ui-stage.netlify.app
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: ${{ env.CACHE_PATHS_BUILD }}
-          key: ${{ env.CACHE_KEY_BUILD }}
-
-      - uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: ${{ env.FILE_PATH_UI_TAILWIND_BUILD }}
-          production-deploy: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STAGE_UI }}
-
-  deploy-ui-prod:
-    name: Deploy UI - Prod 🚀
-    needs: [build, lint, tsc, test]
-    runs-on: ubuntu-latest
-    if: github.ref_type == 'tag'
-
-    environment:
-      name: UI - Prod
-      url: https://turbo-ui-prod.netlify.app
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: ${{ env.CACHE_PATHS_BUILD }}
-          key: ${{ env.CACHE_KEY_BUILD }}
-
-      - uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: ${{ env.FILE_PATH_UI_TAILWIND_BUILD }}
-          production-deploy: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PROD_UI }}

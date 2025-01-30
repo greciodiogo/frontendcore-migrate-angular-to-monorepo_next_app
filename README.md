@@ -1,4 +1,4 @@
-# Frontend Monorepo Boilerplate TypeScript / Tailwind / Material UI
+# Frontend Monorepo Boilerplate TypeScript / Material UI
 
 [![CI][ci-badge]][ci-url]
 [![TypeScript][typescript-badge]][typescript-url]
@@ -47,7 +47,6 @@ Visit one of the monorepo apps [localhost:3100](http://localhost:3100/)
 - Monorepo implements 3 styling solutions with shared theme across all apps (pick your use case and remove others).  
   Easily import UI components package into apps:
   - [Vanilla CSS package](https://github.com/mkosir/frontend-monorepo-boilerplate/tree/main/packages/ui)
-  - [Tailwind](https://github.com/mkosir/frontend-monorepo-boilerplate/tree/main/packages/ui-tailwind) components library built with [Tailwind v3](https://tailwindcss.com/)
   - [Material UI](https://github.com/mkosir/frontend-monorepo-boilerplate/tree/main/packages/ui-mui) components library built with [MUI v5](https://mui.com/)
 - Unit and integration tests with [Jest](https://github.com/facebook/jest) and [React Testing Library](https://github.com/testing-library/react-testing-library). Run any single test in monorepo app/package [instantly](https://github.com/mkosir/typescript-style-guide/raw/main/misc/vscode-jest-runner.gif).
 - Linting with [ESLint](https://eslint.org/)
@@ -102,7 +101,7 @@ Monorepo features and conventions:
 - Monorepo is opinionated in order to achieve best developer experience. It's meant to be used as frontend only monorepo, 100% TypeScript, consistent codebase across whole monorepo with automated tooling in place as ESLint, Prettier, TypeScript, conventional commits etc.
 - Workspaces:
   - It comes with two workspaces `apps` and `packages`.
-  - All configurations (eslint, jest, tailwind etc.) in `packages` are always prefixed with "config-" and imported into other workspaces directly from source without building (never transpiled).
+  - All configurations (eslint, jest, etc.) in `packages` are always prefixed with "config-" and imported into other workspaces directly from source without building (never transpiled).
   - All other `packages` beside configurations are always being built/transpiled to `dist/` folder.
 - Merging to `main` branch deploys to `stage` environment, creating new GitHub release deploys to `production`.
 - Monorepo doesn't implement any high-level architectures (islands, micro-frontends), but is prepared with that in mind, so it can be easily extended (page composition, adding shared state etc.)

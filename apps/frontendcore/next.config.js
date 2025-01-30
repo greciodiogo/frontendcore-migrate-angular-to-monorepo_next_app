@@ -2,7 +2,6 @@
 
 const nextConfig = {
   output: 'standalone',
-  distDir: 'build',
   swcMinify: true,
   reactStrictMode: true,
   modularizeImports: {

@@ -1,8 +1,19 @@
-// import { ApiService } from 'services/apiService';
+import { ApiService } from 'services/apiService';
+import { buildQueryString } from 'utils/buildQueryString';
 
-// export class FormService {
-//   async getLojas(queryString: string): Promise<Array<GeTUserDTO>> {
-//     const response = await ApiService.get<{ data: Array<GeTUserDTO> }>(`/users?${queryString}`);
-//     return response.data;
-//   }
-// }
+export class FormService {
+  private route = 'form';
+  async fetchData(url: string, params: URLSearchParams) {
+    const queryString = buildQueryString(params);
+    const response = await ApiService.get(`${this.route}/${url}?${queryString}`);
+    return response.data;
+  }
+
+  async getLojas(params: URLSearchParams) {
+    return this.fetchData('getLojas', params);
+  }
+
+  async getRoles(params: URLSearchParams) {
+    return this.fetchData('getRoles', params);
+  }
+}

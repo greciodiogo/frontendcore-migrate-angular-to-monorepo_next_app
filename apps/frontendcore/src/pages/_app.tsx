@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import './../styles/styles.css';
-import './../styles/at.module.css';
+
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = {

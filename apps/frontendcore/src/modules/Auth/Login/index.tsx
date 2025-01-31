@@ -34,14 +34,14 @@ export const Login = () => {
         {
           position: 'bottom-center',
           hideProgressBar: false,
-          autoClose: 3000,
+          autoClose: 1000,
         },
       );
 
       if (isCredentializedUser) {
         toast.success('Login realizado com sucesso! 🎉  ', {
           position: 'bottom-center',
-          autoClose: 3000,
+          autoClose: 1000,
         });
       } else {
         toast.error('Credenciais inválidas!', {

@@ -1,9 +1,18 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TablePagination,
+  TextField,
+} from '@mui/material';
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 
+// import { Pagination } from 'classes/Pagination';
 import { FormService } from 'common/utils/FormService';
 import { AuthService } from 'lib/login';
-import { GetLojaDTO, GetRoleDTO, GetUserDTO } from 'types';
+import { GetLojaDTO, GetRoleDTO, GetUserDTO, PaginationTypes } from 'types';
 
 const Users = () => {
   const auth = useMemo(() => new AuthService(), []);
@@ -12,6 +21,12 @@ const Users = () => {
   const [users, setUsers] = useState<Array<GetUserDTO>>([]);
   const [roles, setRoles] = useState<Array<GetRoleDTO>>([]);
   const [lojas, setLojas] = useState<Array<GetLojaDTO>>([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    perPage: 5,
+    total: 0,
+    lastPage: 0,
+  });
   const [filters, setFilters] = useState({
     page: 1,
     perPage: '5',
@@ -20,12 +35,19 @@ const Users = () => {
     loja_id: '',
     role_id: '',
     typeFilter: '',
-    typeOrderBy: 'ASC',
+    typeOrderBy: 'DESC',
   });
   const handleChange = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
-    console.log(name, value);
     setFilters((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setFilters((prevData) => ({ ...prevData, page: newPage + 1 }));
+  };
+
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setFilters((prevData) => ({ ...prevData, perPage: event.target.value, page: 1 }));
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
@@ -59,6 +81,13 @@ const Users = () => {
 
         const response = await auth.getUsers(params);
         const users = (response as { data: { data: Array<GetUserDTO> } }).data.data;
+        const pagination = (response as { data: PaginationTypes }).data;
+        setPagination({
+          page: pagination.page,
+          perPage: pagination.perPage,
+          total: pagination.total,
+          lastPage: pagination.lastPage,
+        });
         setUsers(users);
       } catch (err) {
         setError((err as Error).message);
@@ -93,24 +122,6 @@ const Users = () => {
               {/* <!-- Modal body --> */}
               <div className="modal-body">
                 <div className="row">
-                  <FormControl className="col-md-1">
-                    <InputLabel id="demo-simple-select-label">Entrada</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      name="perPage"
-                      value={filters.perPage}
-                      label="Entrada"
-                      onChange={handleChange}
-                      className="example-full-width
-                      "
-                    >
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={10}>10</MenuItem>
-                      <MenuItem value={25}>25</MenuItem>
-                    </Select>
-                  </FormControl>
-
                   <FormControl className="col-md-1">
                     <InputLabel id="demo-simple-select-label">Perfil</InputLabel>
                     <Select
@@ -181,21 +192,6 @@ const Users = () => {
                     label="Pesquisar"
                     variant="outlined"
                   />
-
-                  <div className="">
-                    <div className="form-group">
-                      <div className="example-button-row">
-                        <button
-                          type="button"
-                          className="btn btn-info filter-color-button"
-                          style={{ marginTop: '3px', padding: '4px 16px' }}
-                        >
-                          <i className="fa fa-search"></i>
-                          Filtrar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -261,7 +257,7 @@ const Users = () => {
                             )}
                           </td>
                           <td>{user.loja?.nome ?? '-------'}</td>
-                          <td>{user.direccao?.designacao}</td>
+                          <td>{user.direccao?.designacao ?? '-------'}</td>
                           <td>{user.created_at}</td>
                           <td>{user.updated_at}</td>
                           <td>
@@ -351,6 +347,17 @@ const Users = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="col-lg-12 col-12">
+        <TablePagination
+          component="div"
+          count={pagination.total}
+          page={pagination.page - 1}
+          onPageChange={handleChangePage}
+          rowsPerPage={Number(filters.perPage)}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );

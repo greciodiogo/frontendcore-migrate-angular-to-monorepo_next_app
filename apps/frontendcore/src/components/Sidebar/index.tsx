@@ -8,7 +8,7 @@ export const Sidebar = () => {
           src={`../../../../assets/img/${logotipo}`}
           alt="AdminLTE Logo"
           className="brand-imagee img-circlee elevation-3e"
-          style={{ opacity: 0.8 }}
+          style={{ opacity: 0.8, width: '104px' }}
         />
         <span className="brand-text font-weight-lightf">
           <b></b>
